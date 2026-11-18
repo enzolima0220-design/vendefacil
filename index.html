@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta name="description" content="VendeFácil — sistema de controle de vendas e estoque">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VendeFácil</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <!-- ========== 4. HTML: barra lateral ========== -->
+  <aside class="side">
+    <div class="brand">Vende<b>Fácil</b></div><div class="store" id="storeName"></div>
+    <button class="nav on" data-page="dash" data-ic="dash">Dashboard</button>
+    <button class="nav" data-page="prod" data-ic="box">Produtos</button>
+    <button class="nav" data-page="sale" data-ic="cart">Vendas</button>
+    <button class="nav" data-page="hist" data-ic="clock">Histórico</button>
+    <button class="nav" data-page="cfg" data-ic="gear">Configurações</button>
+  </aside>
+
+  <main>
+    <!-- ========== 5. HTML: Dashboard ========== -->
+    <section class="page on" id="dash">
+      <h1>Dashboard</h1><p class="sub">Visão geral do seu negócio</p>
+      <div class="grid kpis" id="kpis"></div>
+      <div class="grid two">
+        <div class="card"><h3>Vendas dos últimos 7 dias (R$)</h3><div id="chart"></div></div>
+        <div class="card"><h3>Produtos mais vendidos</h3><div id="top"></div></div>
+      </div>
+      <div class="grid two">
+        <div class="card"><h3>Últimas vendas</h3><div id="last"></div></div>
+        <div class="card"><h3>Atividades recentes</h3><div id="log"></div></div>
+      </div>
+    </section>
+
+    <!-- ========== 6. HTML: Produtos ========== -->
+    <section class="page" id="prod">
+      <h1>Produtos</h1><p class="sub">Cadastre e gerencie seu estoque</p>
+      <div class="tools">
+        <input id="q" placeholder="Pesquisar por nome ou código...">
+        <select id="catF"></select>
+        <button class="btn" onclick="openProd()">+ Novo produto</button>
+      </div>
+      <div class="card wrap"><table><thead><tr><th>Código</th><th>Nome</th><th>Categoria</th><th>Preço</th><th>Estoque</th><th></th></tr></thead><tbody id="ptb"></tbody></table></div>
+    </section>
+
+    <!-- ========== 7. HTML: Vendas ========== -->
+    <section class="page" id="sale">
+      <h1>Nova venda</h1><p class="sub">Registre uma venda e o estoque é atualizado sozinho</p>
+      <div class="grid two">
+        <div class="card">
+          <label>Produto</label><select id="sP"></select>
+          <label>Quantidade</label><input id="sQ" type="number" min="1" step="1" value="1">
+          <label>Preço unitário</label><div id="sPrice">—</div>
+          <label>Total</label><div class="total" id="sTotal">R$ 0,00</div>
+          <div class="err" id="sErr"></div>
+          <button class="btn" onclick="confirmSale()">Confirmar venda</button>
+        </div>
+        <div class="card"><h3>Vendas recentes</h3><div id="sLast"></div></div>
+      </div>
+    </section>
+
+    <!-- ========== 8. HTML: Histórico ========== -->
+    <section class="page" id="hist">
+      <h1>Histórico de vendas</h1><p class="sub">Todas as vendas registradas</p>
+      <div class="tools"><input id="hq" placeholder="Pesquisar produto ou nº (ex: 0003)..."><input id="hd" type="date"><select id="hs"><option value="">Todos os status</option><option value="a">Concluídas</option><option value="c">Canceladas</option></select><button class="btn ghost" onclick="clearHist()">Limpar filtros</button></div>
+      <div class="card wrap"><table><thead><tr><th>Nº</th><th>Data</th><th>Produto</th><th>Qtd.</th><th>Preço</th><th>Total</th><th>Status</th><th></th></tr></thead><tbody id="htb"></tbody></table>
+      <p class="mut" id="hSum" style="margin-top:12px"></p></div>
+    </section>
+
+    <!-- ========== 9. HTML: Configurações ========== -->
+    <section class="page" id="cfg">
+      <h1>Configurações</h1><p class="sub">Personalize o sistema</p>
+      <div class="card" style="max-width:460px">
+        <label>Nome da loja</label><input id="cName">
+        <label>Alerta de estoque baixo (quantidade igual ou menor que)</label><input id="cLow" type="number" min="0" step="1">
+        <div class="acts" style="justify-content:flex-start"><button class="btn" onclick="saveCfg()">Salvar</button></div>
+        <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+        <label>Backup dos dados (JSON)</label>
+        <div class="io"><button class="btn ghost" onclick="exportData()">Exportar dados</button><button class="btn ghost" onclick="$('impFile').click()">Importar dados</button></div>
+        <input type="file" id="impFile" accept=".json,application/json" hidden onchange="importData(this.files[0])">
+        <div class="err" id="ioMsg"></div>
+        <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+        <div class="acts" style="justify-content:flex-start"><button class="btn ghost" onclick="ask('Isso substitui todos os dados atuais por dados de exemplo. Continuar?',()=>{seed();render();toast('Dados de exemplo carregados')})">Carregar exemplos</button>
+        <button class="btn red" onclick="ask('Apagar TODOS os dados? Não dá para desfazer.',()=>{db.products=[];db.sales=[];db.log=[];db.nextNum=1;save();render();toast('Dados apagados')})">Apagar tudo</button></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Janela de produto -->
+<dialog id="dlg"><form id="pf"><h3 id="dTitle">Produto</h3>
+  <label>Nome</label><input id="fName">
+  <label>Categoria</label><input id="fCat" list="cats"><datalist id="cats"></datalist>
+  <label>Preço de venda (R$)</label><input id="fPrice" type="number" min="0" step="0.01">
+  <label>Quantidade em estoque</label><input id="fStock" type="number" min="0" step="1">
+  <label>Código identificador</label><input id="fCode">
+  <div class="err" id="fErr"></div>
+  <div class="acts"><button type="button" class="btn ghost" onclick="dlg.close()">Cancelar</button><button class="btn">Salvar</button></div>
+</form></dialog>
+<!-- Janela de confirmação -->
+<dialog id="cfm"><p id="cMsg"></p><div class="acts"><button class="btn ghost" onclick="cfm.close()">Cancelar</button><button class="btn red" id="cOk">Confirmar</button></div></dialog>
+<div id="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>

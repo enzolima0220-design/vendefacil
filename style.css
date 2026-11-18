@@ -1,0 +1,59 @@
+/* ========== 1. CSS: cores e variáveis (mude aqui para trocar o tema) ========== */
+:root{--bg:#0b0d0e;--card:#16191b;--card2:#1d2124;--line:#272c30;--txt:#e8ecee;--mut:#8b959b;--acc:#22c55e;--bad:#ef4444;--warn:#f59e0b;--r:14px;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--txt);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input,select{font:inherit;color:inherit}
+svg{width:18px;height:18px;flex:none}
+/* ========== 2. CSS: layout ========== */
+.app{display:grid;grid-template-columns:230px 1fr;height:100%}
+.side{background:var(--card);border-right:1px solid var(--line);padding:20px 14px;display:flex;flex-direction:column;gap:6px}
+.brand{font-weight:700;font-size:20px;padding:0 10px 2px}.brand b{color:var(--acc)}
+.store{color:var(--mut);font-size:12px;padding:0 10px 18px}
+.nav{display:flex;align-items:center;gap:12px;background:none;border:0;padding:10px 12px;border-radius:10px;color:var(--mut);cursor:pointer;text-align:left;transition:.2s}
+.nav:hover{background:var(--card2);color:var(--txt)}
+.nav.on{background:rgba(34,197,94,.14);color:var(--acc)}
+main{overflow:auto;padding:28px}
+h1{font-size:24px}.sub{color:var(--mut);margin-bottom:22px}
+.page{display:none;animation:in .3s ease}.page.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.grid{display:grid;gap:16px}.kpis{grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin-bottom:16px}
+.two{grid-template-columns:repeat(auto-fit,minmax(300px,1fr));margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.card h3{font-size:15px;margin-bottom:12px}
+.kpi{display:flex;gap:14px;align-items:center}
+.ico{width:42px;height:42px;border-radius:12px;background:rgba(34,197,94,.14);color:var(--acc);display:grid;place-items:center}
+.kpi small{color:var(--mut);display:block}.kpi strong{font-size:22px}
+.row{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border:0}.mut{color:var(--mut);font-size:13px}
+.empty{color:var(--mut);padding:14px 0;text-align:center}
+.bar{fill:var(--acc)}.lbl{fill:var(--mut);font-size:11px}
+.meter{height:6px;background:var(--card2);border-radius:9px;margin-top:5px}.meter i{display:block;height:100%;background:var(--acc);border-radius:9px}
+/* ========== 3. CSS: tabelas, formulários e botões ========== */
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+input,select{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:9px 12px;width:100%;outline:0}
+input:focus,select:focus{border-color:var(--acc)}
+.tools input,.tools select{width:auto;flex:1;min-width:150px}
+.btn{background:var(--acc);color:#04210f;border:0;border-radius:10px;padding:9px 16px;font-weight:600;cursor:pointer;transition:.2s}
+.btn:hover{filter:brightness(1.1)}.btn.ghost{background:var(--card2);color:var(--txt)}.btn.red{background:var(--bad);color:#fff}
+.btn.sm{padding:5px 10px;font-size:13px}
+.wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:520px}
+th{color:var(--mut);font-weight:500;text-align:left;font-size:13px}th,td{padding:11px 10px;border-bottom:1px solid var(--line)}
+tr:hover td{background:var(--card2)}
+.tag{padding:2px 9px;border-radius:99px;font-size:12px;background:var(--card2)}.tag.low{background:rgba(245,158,11,.15);color:var(--warn)}.tag.zero{background:rgba(239,68,68,.15);color:var(--bad)}
+label{display:block;color:var(--mut);font-size:13px;margin:12px 0 4px}
+.err{color:var(--bad);font-size:13px;min-height:20px;margin-top:8px}
+.total{font-size:26px;font-weight:700;color:var(--acc)}
+dialog{background:var(--card);color:var(--txt);border:1px solid var(--line);border-radius:var(--r);padding:22px;width:min(420px,92vw);margin:auto}
+dialog::backdrop{background:rgba(0,0,0,.65)}
+.acts{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+#toast{position:fixed;right:20px;bottom:20px;background:var(--acc);color:#04210f;padding:11px 18px;border-radius:10px;font-weight:600;opacity:0;transform:translateY(10px);transition:.3s;pointer-events:none}
+#toast.on{opacity:1;transform:none}
+@media(max-width:760px){.app{grid-template-columns:1fr;grid-template-rows:auto 1fr}.side{flex-direction:row;overflow-x:auto;padding:10px;border:0;border-bottom:1px solid var(--line)}.brand,.store{display:none}main{padding:18px}}
+/* ========== 4. CSS: novidades da versão 2 ========== */
+.tag.ok{background:rgba(34,197,94,.15);color:var(--acc)}
+tr.canceled td:not(:last-child){opacity:.5}
+#hist table{min-width:860px}
+.ok-msg{color:var(--acc)}
+.io{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+
